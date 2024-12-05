@@ -36,14 +36,10 @@ class Snake:
                 self.dead = True
 
             if self.dead:
-                '''change this to go to game over screen'''
-                self.x, self.y = block_size, block_size
-                self.head = pygame.Rect(self.x, self.y, block_size, block_size)
-                self.body = [pygame.Rect(self.x - block_size, self.y, block_size, block_size)]
-                self.dirX = 1
+                self.dirX = 0
                 self.dirY = 0
-                self.dead = False
-                apple = Apple()
+                screen.fill('Black')
+                game_over()
 
         self.body.append(self.head)
         for i in range(len(self.body)-1):
@@ -102,6 +98,8 @@ def get_font(size):
     return pygame.font.Font('Comic Sans MS.ttf', size)
 
 def play():
+    global score
+
     snake = Snake()
     apple = Apple()
     score = len(snake.body) + 1 #will be in on top of screen and in stats at end of game
@@ -109,7 +107,7 @@ def play():
     while True:
         screen.fill('Black')
         drawGrid()
-        pygame.display.set_caption('Snake Game')
+        pygame.display.set_caption('Snake - Game')
 
 
         for event in pygame.event.get():
@@ -148,7 +146,7 @@ def play():
         clock.tick(10) #changes speed --> will be dependent on user input
 
 def main_menu():
-    pygame.display.set_caption('Snake Menu')
+    pygame.display.set_caption('Snake - Menu')
     font = pygame.font.Font('Comic Sans MS.ttf', 74)
     small_font = pygame.font.Font('Comic Sans MS.ttf', 50)
 
@@ -163,9 +161,15 @@ def main_menu():
 
         pygame.display.flip()
         #play()
-        menu_play = Button(image=None, pos=(200, 200), text_input='START', font=get_font(50), base_color='White', hovering_color='Gray')
+        menu_play = Button(image=None, pos=(250, 400), text_input='START', font=get_font(50), base_color='White', hovering_color='Gray')
         menu_play.changeColor(mouse_pos)
         menu_play.update(screen)
+
+        #quit
+        menu_quit = Button(image=None, pos=(250, 500), text_input='EXIT', font=get_font(50), base_color='White',
+                           hovering_color='Gray')
+        menu_quit.changeColor(mouse_pos)
+        menu_quit.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -176,18 +180,59 @@ def main_menu():
                 if menu_play.checkForInput(mouse_pos):
                     play()
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if menu_quit.checkForInput(mouse_pos):
+                    pygame.quit()
+                    exit()
 
         pygame.display.update()
 
 def game_over():
+    global score
+
+    pygame.display.set_caption('Snake - Game Over')
     while True:
+        mouse_pos = pygame.mouse.get_pos()
+
         screen.fill('Black')
 
+        #game over text
+        game_over_text = get_font(75).render("Game Over!", True, 'White')
+        screen.blit(game_over_text, (screen_width // 2 - game_over_text.get_width() // 2, 100))
+
+        #score
+        score_text = get_font(40).render(f"Score: {score}", True, 'White')
+        screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, 200))
+
+        pygame.display.flip()
+
+        #menu button
+        over_menu = Button(image=None, pos=(300, 300), text_input='MAIN MENU', font=get_font(50), base_color='White',
+                           hovering_color='Gray')
+        over_menu.changeColor(mouse_pos)
+        over_menu.update(screen)
+
+        #quit button
+        over_quit = Button(image=None, pos=(400, 350), text_input='EXIT', font=get_font(50), base_color='White',
+                           hovering_color='Gray')
+        over_quit.changeColor(mouse_pos)
+        over_quit.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if over_quit.checkForInput(mouse_pos):
+                    pygame.quit()
+                    exit()
+
+                if over_menu.checkForInput(mouse_pos):
+                    main_menu()
+
+        pygame.display.update()
+
 
 main_menu()
 #drawGrid()
