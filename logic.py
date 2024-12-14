@@ -138,7 +138,6 @@ def game_over():
 
     :return: None
     """
-    global score
 
     pygame.display.set_caption('Snake - Game Over')
     while True:
@@ -149,10 +148,6 @@ def game_over():
         #game over text
         game_over_text: pygame.Surface = get_font(75).render("Game Over!", True, 'White')
         screen.blit(game_over_text, (Snake.get_screen_w(snake) // 2 - game_over_text.get_width() // 2, 100))
-
-        #score
-        score_text: pygame.Surface = get_font(40).render(f"Score: {score}", True, 'White')
-        screen.blit(score_text, (Snake.get_screen_w(snake) // 2 - score_text.get_width() // 2, 0))
 
         pygame.display.flip()
 
