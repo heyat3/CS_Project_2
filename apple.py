@@ -1,13 +1,24 @@
 import pygame
 import random
-from snake import Snake
-import logic
+from logic import *
 
 class Apple:
-    def __init__(self):
-        self.x = int(random.randint(0, Snake.get_screen_w())//Snake.get_block_size() - 1) * Snake.get_block_size()
-        self.y = int(random.randint(0, Snake.get_screen_h())//Snake.get_block_size() - 1) * Snake.get_block_size()
-        self.rect = pygame.Rect(self.x, self.y, Snake.get_block_size(), Snake.get_block_size())
+    def __init__(self, snake, screen):
+        """
+        initialize Apple object
+
+        :param snake: Snake object to make sure apple doesn't spawn on snake
+        :param screen: surface where apple is drawn
+        """
+        self.screen: pygame.Surface = screen
+        self.x: int = int(random.randint(0, Snake.get_screen_w(self=snake))//Snake.get_block_size(self=snake) - 1) * Snake.get_block_size(self=snake)
+        self.y: int = int(random.randint(0, Snake.get_screen_h(self=snake)//Snake.get_block_size(self=snake) - 1) * Snake.get_block_size(self=snake))
+        self.rect: pygame.Rect = pygame.Rect(self.x, self.y, Snake.get_block_size(self=snake), Snake.get_block_size(self=snake))
 
     def update(self):
-        pygame.draw.rect(logic.screen, 'Red', self.rect)
+        """
+        draws apple on screen
+
+        :return: None
+        """
+        pygame.draw.rect(self.screen, 'Red', self.rect)
